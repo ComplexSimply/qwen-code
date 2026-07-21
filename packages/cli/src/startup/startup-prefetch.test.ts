@@ -433,7 +433,7 @@ describe('startupPrefetch', () => {
     await vi.dynamicImportSettled();
 
     expect(mockUpdateEventEmit).toHaveBeenCalledWith('update-failed', {
-      message: 'Update check skipped (registry error) — run /update to retry.',
+      message: 'Update check skipped — run /update to retry.',
       severity: 'warning',
     });
     expect(mockRequestUpdateOnExit).not.toHaveBeenCalled();
@@ -459,10 +459,14 @@ describe('startupPrefetch', () => {
     });
   });
 
-  it('reports an offline-specific reason when the registry is unreachable', async () => {
+  it('uses the generic skipped message for non-timeout errors', async () => {
+    // Real network failures do not carry a reliable top-level code: Node 22
+    // fetch nests ENOTFOUND under error.cause, and execFile({timeout}) yields
+    // code:null/killed:true. Everything but our own sentinel takes the
+    // generic path.
     const config = makeConfig();
-    const error = new Error('getaddrinfo failed') as NodeJS.ErrnoException;
-    error.code = 'ENOTFOUND';
+    const cause = new Error('getaddrinfo ENOTFOUND registry.npmjs.org');
+    const error = new TypeError('fetch failed', { cause });
     mockCheckForUpdatesDetailed.mockResolvedValue({
       status: 'error',
       error,
@@ -473,8 +477,7 @@ describe('startupPrefetch', () => {
     await vi.dynamicImportSettled();
 
     expect(mockUpdateEventEmit).toHaveBeenCalledWith('update-failed', {
-      message:
-        'Update check skipped (registry unreachable) — run /update to retry.',
+      message: 'Update check skipped — run /update to retry.',
       severity: 'warning',
     });
   });
@@ -703,7 +706,7 @@ describe('startupPrefetch', () => {
 
     expect(mockWarn).toHaveBeenCalledWith('update_check failed:', error);
     expect(mockUpdateEventEmit).toHaveBeenCalledWith('update-failed', {
-      message: 'Update check skipped (registry error) — run /update to retry.',
+      message: 'Update check skipped — run /update to retry.',
       severity: 'warning',
     });
   });

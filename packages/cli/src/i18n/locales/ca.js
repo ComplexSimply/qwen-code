@@ -2098,14 +2098,12 @@ export default {
     'Hi ha una versió nova de Qwen Code disponible! {{current}} → {{latest}}',
   'Qwen Code {{version}} is up to date!':
     'Qwen Code {{version}} està actualitzat!',
-  'Failed to check for updates ({{reason}}). Please check your network or registry configuration.':
-    "No s'han pogut comprovar les actualitzacions ({{reason}}). Comproveu la xarxa o la configuració del registre.",
-  'Update check skipped ({{reason}}) — run /update to retry.':
-    "S'ha omès la comprovació d'actualitzacions ({{reason}}) — executeu /update per tornar-ho a provar.",
-  'registry did not respond within {{seconds}}s':
-    'el registre no ha respost en {{seconds}}s',
-  'registry unreachable': 'no es pot accedir al registre',
-  'registry error': 'error del registre',
+  'Failed to check for updates. Please check your network or registry configuration.':
+    "No s'han pogut comprovar les actualitzacions. Comproveu la xarxa o la configuració del registre.",
+  'Update check skipped (registry did not respond within {{seconds}}s) — run /update to retry.':
+    "S'ha omès la comprovació d'actualitzacions (el registre no ha respost en {{seconds}}s) — executeu /update per tornar-ho a provar.",
+  'Update check skipped — run /update to retry.':
+    "S'ha omès la comprovació d'actualitzacions — executeu /update per tornar-ho a provar.",
   'Unable to check for updates: {{reason}}':
     'No es poden comprovar les actualitzacions: {{reason}}',
   'Update successful! The new version will be used on your next run.':

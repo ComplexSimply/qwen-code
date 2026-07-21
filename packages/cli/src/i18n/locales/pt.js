@@ -2133,14 +2133,12 @@ export default {
     'Uma nova versão do Qwen Code está disponível! {{current}} → {{latest}}',
   'Qwen Code {{version}} is up to date!':
     'Qwen Code {{version}} está atualizado!',
-  'Failed to check for updates ({{reason}}). Please check your network or registry configuration.':
-    'Falha ao verificar atualizações ({{reason}}). Verifique sua rede ou configuração do registro.',
-  'Update check skipped ({{reason}}) — run /update to retry.':
-    'Verificação de atualização ignorada ({{reason}}) — execute /update para tentar novamente.',
-  'registry did not respond within {{seconds}}s':
-    'o registro não respondeu em {{seconds}}s',
-  'registry unreachable': 'registro inacessível',
-  'registry error': 'erro no registro',
+  'Failed to check for updates. Please check your network or registry configuration.':
+    'Falha ao verificar atualizações. Verifique sua rede ou configuração do registro.',
+  'Update check skipped (registry did not respond within {{seconds}}s) — run /update to retry.':
+    'Verificação de atualização ignorada (o registro não respondeu em {{seconds}}s) — execute /update para tentar novamente.',
+  'Update check skipped — run /update to retry.':
+    'Verificação de atualização ignorada — execute /update para tentar novamente.',
   'Unable to check for updates: {{reason}}':
     'Não foi possível verificar atualizações: {{reason}}',
   'Update successful! The new version will be used on your next run.':

@@ -17,7 +17,7 @@ export const updateCommand: SlashCommand = {
   supportedModes: ['interactive', 'non_interactive', 'acp'] as const,
   action: async (context) => {
     const [
-      { checkForUpdatesDetailed, describeUpdateCheckFailure },
+      { checkForUpdatesDetailed },
       {
         CUSTOM_SANDBOX_IMAGE_ENV_VAR,
         HOST_UPDATE_RELAUNCH_ENV_VAR,
@@ -54,8 +54,7 @@ export const updateCommand: SlashCommand = {
         type: 'message' as const,
         messageType: 'error' as const,
         content: t(
-          'Failed to check for updates ({{reason}}). Please check your network or registry configuration.',
-          { reason: describeUpdateCheckFailure(updateCheck.error) },
+          'Failed to check for updates. Please check your network or registry configuration.',
         ),
       };
     }

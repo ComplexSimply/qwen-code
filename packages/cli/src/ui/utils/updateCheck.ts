@@ -46,60 +46,6 @@ export class UpdateCheckTimeoutError extends Error {
   }
 }
 
-export type UpdateCheckFailureReason = 'timeout' | 'offline' | 'registry';
-
-const NETWORK_ERROR_CODES = [
-  'ENOTFOUND',
-  'ECONNREFUSED',
-  'EAI_AGAIN',
-  'ETIMEDOUT',
-  'ENETUNREACH',
-];
-
-/**
- * Buckets an update-check failure so callers can tell the user what actually
- * happened instead of a generic "check your network" message. Matches error
- * codes both on the `code` property and inside the message text, because the
- * global-npm path surfaces network failures only through `npm` child-process
- * stderr embedded in the error message. Related: #7049.
- */
-export function classifyUpdateCheckError(
-  error: unknown,
-): UpdateCheckFailureReason {
-  if (error instanceof UpdateCheckTimeoutError) return 'timeout';
-  if (error instanceof Error) {
-    const code = (error as NodeJS.ErrnoException).code;
-    if (
-      NETWORK_ERROR_CODES.some(
-        (netCode) => code === netCode || error.message.includes(netCode),
-      )
-    ) {
-      return 'offline';
-    }
-  }
-  return 'registry';
-}
-
-/**
- * Short human-readable reason for an update-check failure, for embedding in
- * status messages, e.g. "registry did not respond within 5s".
- */
-export function describeUpdateCheckFailure(
-  error: unknown,
-  timeoutMs: number = FETCH_TIMEOUT_MS,
-): string {
-  switch (classifyUpdateCheckError(error)) {
-    case 'timeout':
-      return t('registry did not respond within {{seconds}}s', {
-        seconds: String(Math.round(timeoutMs / 1000)),
-      });
-    case 'offline':
-      return t('registry unreachable');
-    default:
-      return t('registry error');
-  }
-}
-
 async function fetchInfoWithTimeout(
   notifier: { fetchInfo(): UpdateInfo | Promise<UpdateInfo> },
   timeoutMs: number,

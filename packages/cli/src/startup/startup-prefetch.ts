@@ -159,7 +159,7 @@ export function startPostRenderPrefetches(
   ) {
     runDeferredTask('update_check', async () => {
       const [
-        { checkForUpdatesDetailed, describeUpdateCheckFailure },
+        { checkForUpdatesDetailed, FETCH_TIMEOUT_MS, UpdateCheckTimeoutError },
         { handleAutoUpdate },
         { getInstallationInfo },
         { updateEventEmitter },
@@ -172,12 +172,18 @@ export function startPostRenderPrefetches(
         import('../i18n/index.js'),
       ]);
       // The startup check is best-effort background work: surface failures as
-      // a soft warning with the concrete reason instead of an alarming error
-      // (#7049), while keeping the failure visible (#6857).
+      // a soft warning instead of an alarming error (#7049), while keeping
+      // the failure visible (#6857). Only our own timeout sentinel gets a
+      // specific reason — real network failures carry no reliable top-level
+      // code (Node 22 fetch nests it under error.cause; execFile({timeout})
+      // reports killed/SIGTERM), so everything else stays generic.
       const updateCheckSkippedMessage = (error: unknown) =>
-        t('Update check skipped ({{reason}}) — run /update to retry.', {
-          reason: describeUpdateCheckFailure(error),
-        });
+        error instanceof UpdateCheckTimeoutError
+          ? t(
+              'Update check skipped (registry did not respond within {{seconds}}s) — run /update to retry.',
+              { seconds: String(Math.round(FETCH_TIMEOUT_MS / 1000)) },
+            )
+          : t('Update check skipped — run /update to retry.');
       try {
         const result = await checkForUpdatesDetailed();
         if (result.status === 'update') {
